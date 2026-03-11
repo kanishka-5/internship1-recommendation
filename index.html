@@ -1,33 +1,366 @@
+```html
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <title>Internship Recommendation System</title>
-    <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>AI Internship Recommendation System</title>
+
+<style>
+
+body{
+font-family: Arial;
+margin:0;
+background:#f4f6fb;
+}
+
+/* Navbar */
+
+.navbar{
+background:#1e3c72;
+color:white;
+padding:15px;
+text-align:center;
+}
+
+/* Container */
+
+.container{
+width:400px;
+margin:40px auto;
+background:white;
+padding:30px;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+/* LOGIN PAGE STYLE */
+
+.login-container{
+width:420px;
+margin:60px auto;
+background:#eeeeee;
+padding:40px;
+border-radius:12px;
+text-align:center;
+box-shadow:0 8px 20px rgba(0,0,0,0.15);
+}
+
+.login-container h2{
+margin-bottom:20px;
+}
+
+.login-container label{
+display:block;
+margin-top:15px;
+font-weight:bold;
+}
+
+.login-container input{
+width:100%;
+padding:10px;
+margin-top:8px;
+border:1px solid #ccc;
+border-radius:4px;
+background:#cdd5df;
+}
+
+.login-container button{
+margin-top:20px;
+padding:10px 20px;
+background:green;
+color:white;
+border:none;
+border-radius:4px;
+cursor:pointer;
+font-size:15px;
+}
+
+.login-container button:hover{
+background:darkgreen;
+}
+
+/* Inputs */
+
+input{
+width:100%;
+padding:10px;
+margin:10px 0;
+border:1px solid #ccc;
+border-radius:5px;
+}
+
+/* Buttons */
+
+button{
+width:100%;
+padding:10px;
+background:#2a5298;
+color:white;
+border:none;
+border-radius:5px;
+cursor:pointer;
+font-size:15px;
+}
+
+button:hover{
+background:#1e3c72;
+}
+
+/* Dashboard Cards */
+
+.card-container{
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.card{
+background:#f7f7f7;
+padding:15px;
+border-radius:8px;
+text-align:center;
+cursor:pointer;
+}
+
+.card:hover{
+background:#e3e8ff;
+}
+
+/* Recommendation list */
+
+ul{
+padding-left:20px;
+}
+
+.hidden{
+display:none;
+}
+
+</style>
 </head>
 
 <body>
 
-<h1>AI Internship Recommendation</h1>
+<div class="navbar">
+<h2>AI Internship Recommendation System</h2>
+</div>
 
-<div class="container">
+<!-- LOGIN PAGE -->
 
-<label>Name</label>
-<input type="text" id="name" placeholder="Enter your name">
+<div id="loginPage" class="login-container">
 
-<label>Skills</label>
-<input type="text" id="skills" placeholder="Example: Java, Python">
+<h2>Student Login</h2>
 
-<label>CGPA</label>
-<input type="number" id="cgpa" placeholder="Enter CGPA">
+<label>Username</label>
+<input type="text" id="username" placeholder="Enter Username">
 
-<button onclick="recommendInternship()">Get Recommendation</button>
+<label>Password</label>
+<input type="password" id="password" placeholder="Enter Password">
 
-<h3 id="result"></h3>
+<button onclick="login()">Login</button>
 
 </div>
+
+<!-- DASHBOARD -->
+
+<div id="dashboardPage" class="container hidden">
+
+<h2>Student Dashboard</h2>
+
+<div class="card-container">
+
+<div class="card" onclick="showPage('formPage')">
+Fill Student Form
+</div>
+
+<div class="card" onclick="showPage('profilePage')">
+Student Profile
+</div>
+
+<div class="card" onclick="showPage('recommendPage')">
+View Recommendations
+</div>
+
+<div class="card" onclick="logout()">
+Logout
+</div>
+
+</div>
+
+</div>
+
+<!-- STUDENT FORM -->
+
+<div id="formPage" class="container hidden">
+
+<h2>Student Form</h2>
+
+<input type="text" id="name" placeholder="Enter Name">
+<input type="text" id="skills" placeholder="Enter Skills (Java, Python, AI)">
+<input type="text" id="interest" placeholder="Enter Interest (AI, Web)">
+
+<button onclick="saveStudent()">Save Profile</button>
+<button onclick="showPage('dashboardPage')">Back</button>
+
+</div>
+
+<!-- PROFILE PAGE -->
+
+<div id="profilePage" class="container hidden">
+
+<h2>Student Profile</h2>
+
+<p><b>Name:</b> <span id="pname"></span></p>
+<p><b>Skills:</b> <span id="pskills"></span></p>
+<p><b>Interest:</b> <span id="pinterest"></span></p>
+
+<button onclick="showPage('dashboardPage')">Back</button>
+
+</div>
+
+<!-- RECOMMENDATION PAGE -->
+
+<div id="recommendPage" class="container hidden">
+
+<h2>Internship Recommendations</h2>
+
+<button onclick="getRecommendation()">Get Recommendation</button>
+
+<ul id="recommendations"></ul>
+
+<button onclick="showPage('dashboardPage')">Back</button>
+
+</div>
+
+<script>
+
+/* PAGE NAVIGATION */
+
+function showPage(page){
+
+let pages=["loginPage","dashboardPage","formPage","profilePage","recommendPage"];
+
+pages.forEach(p=>{
+document.getElementById(p).classList.add("hidden");
+});
+
+document.getElementById(page).classList.remove("hidden");
+
+if(page==="profilePage"){
+loadProfile();
+}
+
+}
+
+/* LOGIN */
+
+function login(){
+
+let user=document.getElementById("username").value;
+let pass=document.getElementById("password").value;
+
+if(user==="student" && pass==="123"){
+
+showPage("dashboardPage");
+
+}else{
+
+alert("Invalid Login");
+
+}
+
+}
+
+/* LOGOUT */
+
+function logout(){
+
+showPage("loginPage");
+
+}
+
+/* SAVE STUDENT */
+
+function saveStudent(){
+
+let name=document.getElementById("name").value;
+let skills=document.getElementById("skills").value;
+let interest=document.getElementById("interest").value;
+
+localStorage.setItem("name",name);
+localStorage.setItem("skills",skills);
+localStorage.setItem("interest",interest);
+
+alert("Profile Saved Successfully");
+
+}
+
+/* LOAD PROFILE */
+
+function loadProfile(){
+
+document.getElementById("pname").innerText=localStorage.getItem("name");
+document.getElementById("pskills").innerText=localStorage.getItem("skills");
+document.getElementById("pinterest").innerText=localStorage.getItem("interest");
+
+}
+
+/* RECOMMENDATION API */
+
+function getRecommendation(){
+
+let skills=localStorage.getItem("skills");
+let interest=localStorage.getItem("interest");
+
+fetch("http://localhost:8088/recommend",{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+skills:skills,
+interest:interest
+})
+
+})
+
+.then(res=>res.json())
+
+.then(data=>{
+
+let list=document.getElementById("recommendations");
+list.innerHTML="";
+
+data.forEach(item=>{
+
+let li=document.createElement("li");
+li.innerText=item;
+
+list.appendChild(li);
+
+});
+
+})
+
+.catch(()=>{
+
+alert("Backend connection failed");
+
+});
+
+}
+
+</script>
+
+</body>
+</html>
+```
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
